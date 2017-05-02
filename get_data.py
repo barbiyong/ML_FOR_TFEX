@@ -34,3 +34,13 @@ def get_ohlc(stockName, period):
         # Volume.append(float(row.split(',')[5]) * 100)
 
     return Date, Open, Close, High, Low
+
+# data = get_ohlc('S50M17', '3')
+# total = 0
+# lenght = int(len(data[0]))
+#
+# for i in range(lenght-1000, lenght):
+#     print(data[0][i])
+#     diff = data[3][i] - data[4][i]
+#     total = total + diff
+# print('avg:', total/lenght)

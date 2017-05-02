@@ -3,7 +3,7 @@ import logging
 logging.getLogger("requests").setLevel(logging.WARNING)
 
 
-def back_test(data, predict, delim):
+def back_test(data, predict, delim, cutloss):
     trade_count = 0
     profit_count = 0
     loss_count = 0
@@ -16,31 +16,30 @@ def back_test(data, predict, delim):
             diff = item - BUY_PRICE
             if diff >= delim:
                 profit_count = profit_count + 1
-                trade_count = trade_count + 1
                 trade_index.append((i, 'green'))
                 HOLD = False
-                break
-            if diff <= -2:
+            if diff <= -cutloss:
                 loss_count = loss_count + 1
-                trade_count = trade_count + 1
                 trade_index.append((i, 'red'))
                 HOLD = False
-                break
         else:
             if predict[i] == 1:
                 HOLD = True
                 BUY_PRICE = item
+                trade_count = trade_count + 1
                 trade_index.append((i, 'blue'))
-
+    cutloss = cutloss * 1
     profit_sum = profit_count * delim
-    loss_sum = profit_count * 1.5
+    loss_sum = loss_count * cutloss
     try:
         win_chance = (profit_count / trade_count)*100
         p_l_ratio = profit_sum / loss_sum
     except:
         win_chance = 0
         p_l_ratio = 0
-    if win_chance >= 55:
+    if win_chance >= 50 and trade_count >= 5:
         plot_pl(close, trade_index, [trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio])
-    print('trade_count:', trade_count, 'profit_count:', profit_count, 'loss_count:', loss_count, 'profit_sum:', profit_sum, 'loss_sum:', loss_sum, 'win_chance:', win_chance, 'p_l_ratio:', p_l_ratio)
+        print('trade_count:', trade_count, 'profit_count:', profit_count, 'loss_count:', loss_count, 'profit_sum:', profit_sum, 'loss_sum:', loss_sum, 'win_chance:', win_chance,
+              'p_l_ratio:', p_l_ratio)
+    # print('trade_count:', trade_count, 'profit_count:', profit_count, 'loss_count:', loss_count, 'profit_sum:', profit_sum, 'loss_sum:', loss_sum, 'win_chance:', win_chance, 'p_l_ratio:', p_l_ratio)
     return trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio

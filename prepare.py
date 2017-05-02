@@ -42,37 +42,37 @@ def get_y_long(data, period, delim):
             count = count + 1
     # print(count / len(ret_list))
 
-    # # train plott
-    # output_file("train_data.html", title='train_data')
-    # p_data = data[slice:10000]
-    # is_up = []
-    # value = []
-    #
-    # for i, item in enumerate(ret_list[slice:10000]):
-    #     if item == 1:
-    #         is_up.append(i)
-    #         value.append(p_data[i])
-    #
-    # p = figure(plot_width=1500, plot_height=800, x_axis_label='train_data')
-    # p.line([i for i in range(int(len(p_data)))], p_data, line_width=1.5, color='grey')
-    # p.circle(is_up, value, fill_color="blue", size=5)
-    # # show(p)
-    #
-    # ##test plott
-    # output_file("test_data.html", title='test_data')
-    # p_data = data[slice + 10000:]
-    # is_up = []
-    # value = []
-    #
-    # for i, item in enumerate(ret_list[slice + 10000:]):
-    #     if item == 1:
-    #         is_up.append(i)
-    #         value.append(p_data[i])
-    #
-    # p = figure(plot_width=1500, plot_height=800, x_axis_label='test_data')
-    # p.line([i for i in range(int(len(p_data)))], p_data, line_width=1.5, color='grey')
-    # p.circle(is_up, value, fill_color="blue", size=5)
-    # show(p)
+    # train plott
+    output_file("train_data.html", title='train_data')
+    p_data = data[slice:10000]
+    is_up = []
+    value = []
+
+    for i, item in enumerate(ret_list[slice:10000]):
+        if item == 1:
+            is_up.append(i)
+            value.append(p_data[i])
+
+    p = figure(plot_width=1500, plot_height=800, x_axis_label='train_data')
+    p.line([i for i in range(int(len(p_data)))], p_data, line_width=1.5, color='grey')
+    p.circle(is_up, value, fill_color="blue", size=5)
+    show(p)
+
+    ##test plott
+    output_file("test_data.html", title='test_data')
+    p_data = data[slice + 10000:]
+    is_up = []
+    value = []
+
+    for i, item in enumerate(ret_list[slice + 10000:]):
+        if item == 1:
+            is_up.append(i)
+            value.append(p_data[i])
+
+    p = figure(plot_width=1500, plot_height=800, x_axis_label='test_data')
+    p.line([i for i in range(int(len(p_data)))], p_data, line_width=1.5, color='grey')
+    p.circle(is_up, value, fill_color="blue", size=5)
+    show(p)
 
     df = pd.DataFrame({'CLASS': ret_list[slice:]})
 
@@ -126,15 +126,15 @@ def classify(name, tf, period, delim):
 
     train_acc = round(accuracy_score(y_train_raw, y_train), 3)
     test_acc = round(accuracy_score(y_test_raw, y_test), 3)
-    # print(train_acc, test_acc)
+    print(train_acc, test_acc)
     trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio = back_test(data=x_test_raw, predict=y_test, delim=delim)
-    # if win_chance >= 55:
-    #     plot_long(x_test_raw, y_test, period, delim, test_acc)
+    if win_chance >= 55:
+        plot_long(x_test_raw, y_test, period, delim, test_acc)
     return test_acc, trade_count, win_chance, p_l_ratio
 
 
 def main():
-    result = classify('S50M17', '3', 30, 3.5)
+    result = classify('S50M17', '3', 15, 3.0)
 
     # for i in range(10, 61):
     #     for j in range(30, 60, 2):

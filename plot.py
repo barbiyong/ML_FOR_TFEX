@@ -18,7 +18,7 @@ def plot_long(x, y, period, delim, test_acc):
     p.circle(is_up, value, color="orange", size=5)
     # p.circle(is_up, [i - 1.5 for i in value], fill_color="red", size=5)
     # p.circle(is_up, [i + delim for i in value], fill_color="green", size=5)
-    show(p)
+    # show(p)
 
 
 def plot_pl(close, trade_index, bt):
@@ -35,4 +35,4 @@ def plot_pl(close, trade_index, bt):
     p = figure(plot_width=1500, plot_height=800, x_axis_label='plot after backtest')
     p.line([i for i in range(int(len(close)))], close, line_width=1.5, color='grey')
     p.circle(index, b_value, color=colors, size=5)
-    show(p)
+    # show(p)

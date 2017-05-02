@@ -1,6 +1,6 @@
 from bokeh.plotting import figure, output_file, show
-import warnings
-warnings.filterwarnings("ignore")
+import logging
+logging.getLogger("requests").setLevel(logging.WARNING)
 
 
 def plot_long(x, y, period, delim, test_acc):
@@ -15,7 +15,7 @@ def plot_long(x, y, period, delim, test_acc):
     output_file("line.html", title=f_name)
     p = figure(plot_width=1500, plot_height=800, x_axis_label=f_name)
     p.line([i for i in range(int(len(plt_cls)))], plt_cls, line_width=1.5, color='grey')
-    p.circle(is_up, value, fill_color="white", size=5)
+    p.circle(is_up, value, color="orange", size=5)
     # p.circle(is_up, [i - 1.5 for i in value], fill_color="red", size=5)
     # p.circle(is_up, [i + delim for i in value], fill_color="green", size=5)
     show(p)

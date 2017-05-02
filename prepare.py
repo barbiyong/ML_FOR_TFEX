@@ -1,3 +1,6 @@
+import logging
+logging.getLogger("requests").setLevel(logging.WARNING)
+
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.externals import joblib
@@ -13,7 +16,7 @@ from backtest import back_test
 
 def get_y_long(data, period, delim):
     slice = 500
-    cutloss = -2
+    cutloss = -1.5
     data = [float(i) for i in data]
     ret_list = []
     count = 0
@@ -109,27 +112,29 @@ def classify(name, tf, period, delim):
     train_acc = round(accuracy_score(y_train_raw, y_train), 3)
     test_acc = round(accuracy_score(y_test_raw, y_test), 3)
     # print(train_acc, test_acc)
-    # plot_long(x_test_raw, y_test, period, delim, test_acc)
     trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio = back_test(data=x_test_raw, predict=y_test, delim=delim)
+    if win_chance >= 55:
+        plot_long(x_test_raw, y_test, period, delim, test_acc)
     return test_acc, trade_count, win_chance, p_l_ratio
 
 
 def main():
     result = classify('S50M17', '3', 20, 3.5)
 
-    avg_test_acc = 0
-    avg_trade_count = 0
-    avg_win_chance = 0
-    avg_p_l_ratio = 0
-
-    for i in range(100):
-        result = classify('S50M17', '3', 20, 3.5)
-        avg_test_acc = avg_test_acc + result[0]
-        avg_trade_count = avg_trade_count + result[1]
-        avg_win_chance = avg_win_chance + result[2]
-        avg_p_l_ratio = avg_p_l_ratio + result[3]
-
-    print(avg_test_acc, avg_trade_count, avg_win_chance, avg_p_l_ratio)
+    # avg_test_acc = 0
+    # avg_trade_count = 0
+    # avg_win_chance = 0
+    # avg_p_l_ratio = 0
+    #
+    # for i in range(100):
+    #     print(i)
+    #     result = classify('S50M17', '3', 40, 3.5)
+    #     avg_test_acc = avg_test_acc + result[0]
+    #     avg_trade_count = avg_trade_count + result[1]
+    #     avg_win_chance = avg_win_chance + result[2]
+    #     avg_p_l_ratio = avg_p_l_ratio + result[3]
+    #
+    # print(avg_test_acc/100, avg_trade_count/100, avg_win_chance/100, avg_p_l_ratio/100)
 
 
 main()

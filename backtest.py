@@ -1,6 +1,6 @@
 from plot import plot_pl
-import warnings
-warnings.filterwarnings("ignore")
+import logging
+logging.getLogger("requests").setLevel(logging.WARNING)
 
 
 def back_test(data, predict, delim):
@@ -34,6 +34,7 @@ def back_test(data, predict, delim):
     loss_sum = profit_count * 1.5
     win_chance = (profit_count / trade_count)*100
     p_l_ratio = profit_sum / loss_sum
-    # plot_pl(close, trade_index, [trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio])
+    if win_chance >= 55:
+        plot_pl(close, trade_index, [trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio])
     print('trade_count:', trade_count, 'profit_count:', profit_count, 'loss_count:', loss_count, 'profit_sum:', profit_sum, 'loss_sum:', loss_sum, 'win_chance:', win_chance, 'p_l_ratio:', p_l_ratio)
     return trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio

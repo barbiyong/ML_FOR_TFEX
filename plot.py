@@ -1,8 +1,9 @@
 import logging
 import os
 import re
-
-from bokeh.plotting import figure, output_file, show
+from math import pi
+from bokeh.plotting import figure, output_file, show, save
+from bokeh.models import DatetimeTickFormatter
 from sklearn.externals import joblib
 
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -101,4 +102,34 @@ def plot_full_predict():
     p.line([i for i in range(int(len(close)))], close, line_width=1.5, color='grey')
     p.circle(index, b_value, color=colors, size=5)
     show(p)
-plot_full_predict()
+
+
+# plot_full_predict()
+
+
+def plot_run_time(date, close, pa, pb, pc):
+    colors = []
+    c_index = []
+    c_value = []
+    for i, e in enumerate(pa):
+        if pa[i] == 1:
+            colors.append('#26A65B')
+            c_index.append(i)
+            c_value.append(close[i])
+        elif pb[i] == 1:
+            colors.append('#22A7F0')
+            c_index.append(i)
+            c_value.append(close[i])
+        elif pc[i] == 1:
+            colors.append('#D24D57')
+            c_index.append(i)
+            c_value.append(close[i])
+    # print(c_index)
+    # print(c_value)
+    # print(colors)
+    output_file("realtime.html", title='realtime_prediction')
+    p = figure(plot_width=1000, plot_height=500, x_axis_label='prediction')
+    p.background_fill_color = "#F2F1EF"
+    p.line([i for i in range(int(len(close)))], close, line_width=1.5, color='black')
+    p.circle(c_index, c_value, color=colors, size=5)
+    save(p)

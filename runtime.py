@@ -1,7 +1,10 @@
 from sklearn.externals import joblib
 from get_data import get_ohlc, get_x
 from datetime import datetime
+import time
+from plot import plot_run_time
 import threading
+
 
 def last_predict(date, close, predict_a, predict_b, predict_c):
     last_buy_predict_a = 0
@@ -54,6 +57,32 @@ def now_state(date, close, predict_a, predict_b, predict_c, have, b_price):
     return ret_string
 
 
+def reduce(pa, pb, pc):
+    for i, e in enumerate(pc):
+        if e == 1 and i < len(pc):
+            for j, e in enumerate(pc[i + 1:]):
+                if e == 1:
+                    pc[i + j + 1] = 0
+                else:
+                    break
+    for i, e in enumerate(pa):
+        if e == 1 and i < len(pa):
+            for j, e in enumerate(pa[i + 1:]):
+                if e == 1:
+                    pa[i + j + 1] = 0
+                else:
+                    break
+
+    for i, e in enumerate(pb):
+        if e == 1 and i < len(pb):
+            for j, e in enumerate(pb[i + 1:]):
+                if e == 1:
+                    pb[i + j + 1] = 0
+                else:
+                    break
+    return pa, pb, pc
+
+
 def main():
     threading.Timer(180.0, main).start()  # called every 3 minute
     fname_a = 'L_T3.2_C0.8_W53_R4.0.sav'
@@ -67,6 +96,7 @@ def main():
     predict_a = predict_a.tolist()
     predict_b = predict_b.tolist()
     predict_c = predict_c.tolist()
+    predict_a, predict_b, predict_c = reduce(predict_a, predict_b, predict_c)
     predict_len_a = len(predict_a)
     predict_len_b = len(predict_b)
     predict_len_c = len(predict_c)
@@ -83,6 +113,9 @@ def main():
         # print(now_state(date, close, predict_a, predict_b, predict_c, True, 985))
         print('\nLAST PREDICT')
         print(last_predict(date, close, predict_a, predict_b, predict_c))
+        pl = -600
+        plot_run_time(date[pl:], close[pl:], predict_a[pl:], predict_b[pl:], predict_c[pl:])
+
 
 if __name__ == '__main__':
     main()

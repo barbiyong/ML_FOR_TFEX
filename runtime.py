@@ -1,7 +1,7 @@
 from sklearn.externals import joblib
 from get_data import get_ohlc, get_x
 from datetime import datetime
-import sched, time
+import threading
 
 def last_predict(date, close, predict_a, predict_b, predict_c):
     last_buy_predict_a = 0
@@ -55,7 +55,7 @@ def now_state(date, close, predict_a, predict_b, predict_c, have, b_price):
 
 
 def main():
-    date = datetime.now().strftime('%Y-%m-%d %H:%M')
+    threading.Timer(180.0, main).start()  # called every 3 minute
     fname_a = 'L_T3.2_C0.8_W53_R4.0.sav'
     fname_b = 'L_T3.2_C0.8_W42_R3.3.sav'
     fname_c = 'S_T2.0_C1.3_W42_R1.8.sav'
@@ -74,7 +74,7 @@ def main():
     date = ohlc[0][len(ohlc[0]) - predict_len:]
     close = ohlc[1][len(ohlc[1]) - predict_len:]
     if len(date) == len(close):
-        print("Get result...")
+        print("\n\n\nGet result...")
         print('-----', str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')), '-----')
         print('A: L_T3.2_C0.8_W53_R4.0', '  B: L_T3.2_C0.8_W42_R3.3', '  C: S_T2.0_C1.3_W42_R1.8')
         print('\nNOW')
@@ -83,9 +83,6 @@ def main():
         # print(now_state(date, close, predict_a, predict_b, predict_c, True, 985))
         print('\nLAST PREDICT')
         print(last_predict(date, close, predict_a, predict_b, predict_c))
-    s.enter(60, 1, main, ())
 
 if __name__ == '__main__':
-    s = sched.scheduler(time.time, time.sleep)
-    s.enter(60, 1, main, ())
-    s.run()
+    main()

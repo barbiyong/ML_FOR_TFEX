@@ -18,10 +18,10 @@ def fit_predict_RandomForestClassifier(X_train, Y, X_test):
     return y_train, y_test
 
 
-def classify(name, tf, TP, cutloss):
+def classify(name, tf, TP, cutloss, period):
     p_train = 15000
     ohlc = get_ohlc(name, tf)
-    y = get_y_short(data=ohlc[2], TP=TP, cutloss=cutloss, p_train=p_train)
+    y = get_y_short(data=ohlc[2], TP=TP, cutloss=cutloss, p_train=p_train, period=period)
     x = get_x(ohlc)
     x_train_raw = x[:p_train]
     y_train_raw = y[:p_train]
@@ -38,9 +38,17 @@ def classify(name, tf, TP, cutloss):
     test_acc = round(accuracy_score(y_test_raw, y_test), 3)
     # print(train_acc, test_acc)
     trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio = back_test_short(x_test_raw, y_test, TP, cutloss=cutloss)
-    plot_long(x_test_raw, y_test, TP, test_acc)
-    # if win_chance >= 50:
-    #     plot_long(x_test_raw, y_test, period, TP, test_acc)
+    for i, e in enumerate(y_test):
+        if e == 1 and i < len(y_test):
+            for j, e in enumerate(y_test[i + 1:]):
+                if e == 1:
+                    y_test[i + j + 1] = 0
+                else:
+                    break
+    # plot_long(x_test_raw[:], y_test[:], TP, test_acc)
+    # print(win_chance,test_acc)
+    if win_chance >= 50 and test_acc*100 >= 85:
+        plot_long(x_test_raw, y_test, TP, test_acc)
     return test_acc, trade_count, win_chance, p_l_ratio
 
 
@@ -49,24 +57,24 @@ def classify(name, tf, TP, cutloss):
 
 
 def get_model():
-    for i in range(1):
-        result = classify(name='S50M17', tf='3', TP=2, cutloss=1.3)
+    for i in range(100):
+        result = classify(name='S50M17', tf='3', TP=2, cutloss=2,period=15)
         print(result)
-        # if result[2] >= 40 and result[1] >= 19:
-        #     break
+        if result[0]*100 >= 85:
+            break
 
 get_model()
 
 
 def check_rating():
-    devide = 100
+    devide = 5
     avg_test_acc = 0
     avg_trade_count = 0
     avg_win_chance = 0
     avg_p_l_ratio = 0
     win_rate = []
     for i in range(devide):
-        result = classify(name='S50M17', tf='3', TP=2, cutloss=0.8)
+        result = classify(name='S50M17', tf='3', TP=2, cutloss=2)
         # print([round(i, 2) for i in result])
         avg_test_acc = avg_test_acc + result[0]
         avg_trade_count = avg_trade_count + result[1]
@@ -80,14 +88,14 @@ def check_rating():
 
 def check_best_range():
     loops = 5
-    for i in range(16, 64, 2):
+    for i in range(10, 26, 1):
         avg_test_acc = 0
         avg_trade_count = 0
         avg_win_chance = 0
         avg_p_l_ratio = 0
         win_rate = []
         for j in range(loops):
-            result = classify(name='S50M17', tf='3', TP=i/10, cutloss=0.8)
+            result = classify(name='S50M17', tf='3', TP=2, cutloss=2, period=i)
             # print(result)
             avg_test_acc = avg_test_acc + result[0]
             avg_trade_count = avg_trade_count + result[1]
@@ -96,7 +104,7 @@ def check_best_range():
             win_rate.append(result[2])
         std = statistics.stdev(win_rate)
         if round(avg_win_chance / loops, 3) >= 0:
-            print(i/10, round(avg_test_acc / loops, 3), round(avg_trade_count / loops, 3), round(avg_win_chance / loops, 3), round(std, 3), round(avg_p_l_ratio / loops,  3))
+            print(i, round(avg_test_acc / loops, 3), round(avg_trade_count / loops, 3), round(avg_win_chance / loops, 3), round(std, 3), round(avg_p_l_ratio / loops,  3))
 
 
 # check_best_range()

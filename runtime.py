@@ -86,8 +86,8 @@ def reduce(pa, pb, pc):
 def main():
     threading.Timer(180.0, main).start()  # called every 3 minute
     fname_a = 'L_T3.2_C0.8_W53_R4.0.sav'
-    fname_b = 'L_T3.2_C0.8_W42_R3.3.sav'
-    fname_c = 'S_T2.0_C1.3_W42_R1.8.sav'
+    fname_b = 'L_T3.2_C1.2_W53_R3.0.sav'
+    fname_c = 'S_T2.0_C2.0_W53_R1.3.sav'
     ohlc = get_ohlc('S50M17', '3')
     ohlc = [i[:] for i in ohlc]
     predict_a = joblib.load(fname_a).predict(get_x(ohlc))
@@ -106,7 +106,7 @@ def main():
     if len(date) == len(close):
         print("\n\n\nGet result...")
         print('-----', str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')), '-----')
-        print('A: L_T3.2_C0.8_W53_R4.0', '  B: L_T3.2_C0.8_W42_R3.3', '  C: S_T2.0_C1.3_W42_R1.8')
+        print('A: L_T3.2_C0.8_W53_R4.0', '  B: L_T3.2_C1.2_W53_R3.0', '  C: S_T2.0_C2.0_W53_R1.3')
         print('\nNOW')
         print(now_state(date, close, predict_a, predict_b, predict_c, False, 0))
         # print('\nNOW [HAVE POSITION]')

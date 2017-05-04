@@ -117,7 +117,7 @@ def get_y_long(data, TP, cutloss, p_train):
 
 
 
-def get_y_short(data, TP, cutloss, p_train):
+def get_y_short(data, TP, cutloss, p_train, period):
     slice = 500
     cutloss = cutloss
     data = [float(i) for i in data]
@@ -126,7 +126,7 @@ def get_y_short(data, TP, cutloss, p_train):
     for i, item in enumerate(data):
         s = i + 1
         appnd = 0
-        for k, j in enumerate(data[s:]):
+        for k, j in enumerate(data[s:s+period]):
             ret = j - item
             if ret < TP*-1:
                 appnd = 1

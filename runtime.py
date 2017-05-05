@@ -1,10 +1,8 @@
 from sklearn.externals import joblib
 from get_data import get_ohlc, get_x
 from datetime import datetime
-import time
 from plot import plot_run_time
 import threading
-
 
 def last_predict(date, close, predict_a, predict_b, predict_c):
     last_buy_predict_a = 0
@@ -18,6 +16,7 @@ def last_predict(date, close, predict_a, predict_b, predict_c):
         if predict_c[i] == 1:
             last_buy_predict_c = i
 
+
     ret_string = 'A ' + str(close[last_buy_predict_a]) + ' @ ' + str(date[last_buy_predict_a] + '  DIFF = ' + str(round(close[-1] - close[last_buy_predict_a], 1)))
     ret_string = ret_string + '\nB ' + str(close[last_buy_predict_b]) + ' @ ' + str(date[last_buy_predict_b] + '  DIFF = ' + str(round(close[-1] - close[last_buy_predict_b], 1)))
     ret_string = ret_string + '\nC ' + str(close[last_buy_predict_c]) + ' @ ' + str(date[last_buy_predict_c] + '  DIFF = ' + str(round(close[-1] - close[last_buy_predict_c], 1)))
@@ -27,6 +26,9 @@ def last_predict(date, close, predict_a, predict_b, predict_c):
 
 def now_state(date, close, predict_a, predict_b, predict_c, have, b_price):
     print(predict_a[-1], predict_b[-1], predict_c[-1])
+    # for i, e in enumerate(predict_c):
+    #     if e == 1:
+    #         print(date[i])
     if have is True:
         if b_price - close[-1] >= 0.8:
             is_buy = 'CUT LOSS NOW'
@@ -49,10 +51,9 @@ def now_state(date, close, predict_a, predict_b, predict_c, have, b_price):
         else:
             is_buy = 'A/B: NONE'
         if predict_c[-1] == 1:
-            is_sell = 'C: WAIT TO BUY'
+            is_sell = 'C: WARNING'
         else:
             is_sell = 'C: NONE'
-
     ret_string = str(close[-1]) + ' @ ' + str(date[-1]) + '   ---|>   ' + str(is_buy) + '   |||   ' + str(is_sell)
     return ret_string
 
@@ -113,7 +114,7 @@ def main():
         # print(now_state(date, close, predict_a, predict_b, predict_c, True, 985))
         print('\nLAST PREDICT')
         print(last_predict(date, close, predict_a, predict_b, predict_c))
-        pl = -600
+        pl = -500
         plot_run_time(date[pl:], close[pl:], predict_a[pl:], predict_b[pl:], predict_c[pl:])
 
 

@@ -4,6 +4,7 @@ from datetime import datetime
 from plot import plot_run_time
 import threading
 
+
 def last_predict(date, close, predict_a, predict_b, predict_c):
     last_buy_predict_a = 0
     last_buy_predict_b = 0
@@ -16,7 +17,6 @@ def last_predict(date, close, predict_a, predict_b, predict_c):
         if predict_c[i] == 1:
             last_buy_predict_c = i
 
-
     ret_string = 'A ' + str(close[last_buy_predict_a]) + ' @ ' + str(date[last_buy_predict_a] + '  DIFF = ' + str(round(close[-1] - close[last_buy_predict_a], 1)))
     ret_string = ret_string + '\nB ' + str(close[last_buy_predict_b]) + ' @ ' + str(date[last_buy_predict_b] + '  DIFF = ' + str(round(close[-1] - close[last_buy_predict_b], 1)))
     ret_string = ret_string + '\nC ' + str(close[last_buy_predict_c]) + ' @ ' + str(date[last_buy_predict_c] + '  DIFF = ' + str(round(close[-1] - close[last_buy_predict_c], 1)))
@@ -25,6 +25,7 @@ def last_predict(date, close, predict_a, predict_b, predict_c):
 
 
 def now_state(date, close, predict_a, predict_b, predict_c, have, b_price):
+    alert = False
     print(predict_a[-1], predict_b[-1], predict_c[-1])
     # for i, e in enumerate(predict_c):
     #     if e == 1:
@@ -32,30 +33,37 @@ def now_state(date, close, predict_a, predict_b, predict_c, have, b_price):
     if have is True:
         if b_price - close[-1] >= 0.8:
             is_buy = 'CUT LOSS NOW'
+            alert = True
         elif predict_a[-1] == 1:
             is_buy = 'A: WAIT TO SELL MORE AT -  ' + str(round(close[-1] + 3.2, 1))
+            alert = True
         elif predict_b[-1] == 1:
             is_buy = 'B: WAIT TO SELL MORE AT -  ' + str(round(close[-1] + 3.2, 1))
+            alert = True
         else:
             is_buy = 'A/B: NONE'
         if predict_c[-1] == 1:
             is_sell = 'C: WARNING TO SELL'
+            alert = True
         else:
             is_sell = 'C: NONE'
 
     if have is False:
         if predict_a[-1] == 1:
             is_buy = 'A: BUY TO SELL AT -  ' + str(round(close[-1] + 3.2, 1))
+            alert = True
         elif predict_b[-1] == 1:
             is_buy = 'B: BUY TO SELL AT -  ' + str(round(close[-1] + 3.2, 1))
+            alert = True
         else:
             is_buy = 'A/B: NONE'
         if predict_c[-1] == 1:
             is_sell = 'C: WARNING'
+            alert = True
         else:
             is_sell = 'C: NONE'
     ret_string = str(close[-1]) + ' @ ' + str(date[-1]) + '   ---|>   ' + str(is_buy) + '   |||   ' + str(is_sell)
-    return ret_string
+    return ret_string, alert
 
 
 def reduce(pa, pb, pc):
@@ -105,15 +113,23 @@ def main():
     date = ohlc[0][len(ohlc[0]) - predict_len:]
     close = ohlc[1][len(ohlc[1]) - predict_len:]
     if len(date) == len(close):
+        ret_string, alert = now_state(date, close, predict_a, predict_b, predict_c, False, 0)
         print("\n\n\nGet result...")
         print('-----', str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')), '-----')
         print('A: L_T3.2_C0.8_W53_R4.0', '  B: L_T3.2_C1.2_W53_R3.0', '  C: S_T2.0_C2.0_W53_R1.3')
-        print('\nNOW')
-        print(now_state(date, close, predict_a, predict_b, predict_c, False, 0))
-        # print('\nNOW [HAVE POSITION]')
-        # print(now_state(date, close, predict_a, predict_b, predict_c, True, 985))
-        print('\nLAST PREDICT')
         print(last_predict(date, close, predict_a, predict_b, predict_c))
+        if alert is True:
+            print('\nNOW')
+            print('\n****************************************************************************************')
+            print('****************************************************************************************')
+            print('****************************************************************************************\n')
+            print(ret_string)
+            print('\n****************************************************************************************')
+            print('****************************************************************************************')
+            print('****************************************************************************************')
+            print('\nLAST PREDICT')
+        else:
+            print('\nNONE')
         pl = -500
         plot_run_time(date[pl:], close[pl:], predict_a[pl:], predict_b[pl:], predict_c[pl:])
 

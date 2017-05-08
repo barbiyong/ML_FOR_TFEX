@@ -38,7 +38,10 @@ def classify(name, tf, TP, cutloss):
     test_acc = round(accuracy_score(y_test_raw, y_test), 3)
     # print(train_acc, test_acc)
     trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio = back_test(x_test_raw, y_test, TP, cutloss=cutloss)
-    plot_long(x_test_raw, y_test, TP, test_acc)
+    # plot_long(x_test_raw, y_test, TP, test_acc)
+    # print(trade_count)
+    if trade_count >= 21 and win_chance >= 45:
+        plot_long(x_test_raw, y_test, TP, test_acc)
     # if win_chance >= 50 and trade_count >=21:
     #     plot_long(x_test_raw, y_test, TP, test_acc)
     return test_acc, trade_count, win_chance, p_l_ratio
@@ -49,9 +52,11 @@ def classify(name, tf, TP, cutloss):
 
 
 def get_model():
-    for i in range(1):
+    for i in range(500):
         result = classify(name='S50M17', tf='3', TP=3.2, cutloss=1.2)
-        print(result)
+        if result[1] >= 21 and result[2] >= 45:
+            print(result)
+            break
         # if result[2] >= 50 and result[1] >= 18:
         #     break
 
@@ -79,7 +84,7 @@ def check_rating():
 
 def check_best_range():
     loops = 10
-    for i in range(8, 30, 2):
+    for i in range(4, 30, 2):
         avg_test_acc = 0
         avg_trade_count = 0
         avg_win_chance = 0

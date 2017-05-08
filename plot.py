@@ -20,7 +20,7 @@ def plot_long(x, y, TP, test_acc):
     f_name = str(TP) + '_' + str(round(test_acc, 2))
     os.remove('predict_plot.html')
     output_file("predict_plot.html", title=f_name)
-    p = figure(plot_width=1500, plot_height=800, x_axis_label=f_name)
+    p = figure(plot_width=1080, plot_height=720, x_axis_label=f_name)
     p.line([i for i in range(int(len(plt_cls)))], plt_cls, line_width=1.5, color='grey')
     p.circle(is_up, value, color="orange", size=5)
     # p.circle(is_up, [i - 1.5 for i in value], fill_color="red", size=5)
@@ -39,7 +39,7 @@ def plot_pl(close, trade_index, bt):
         colors.append(item[1])
     os.remove('bd.html')
     output_file("bd.html", title='plot after backtest')
-    p = figure(plot_width=1500, plot_height=800, x_axis_label='plot after backtest')
+    p = figure(plot_width=1080, plot_height=720, x_axis_label='plot after backtest')
     p.line([i for i in range(int(len(close)))], close, line_width=1.5, color='grey')
     p.circle(index, b_value, color=colors, size=5)
     show(p)
@@ -52,7 +52,7 @@ def plot_full_predict():
     x = get_x(ohlc)
     range_of_p = 0
     X = x[range_of_p:]
-    fname = 'L_T3.2_C0.8_W42_R3.3.sav'
+    fname = 'L_T3.2_C1.2.sav'
     predict = joblib.load(fname).predict(X)
     predict = predict.tolist()
     print(predict, '\n', len(predict))
@@ -127,8 +127,9 @@ def plot_run_time(date, close, pa, pb, pc):
     # print(c_index)
     # print(c_value)
     # print(colors)
+    os.remove('realtime.html')
     output_file("realtime.html", title='realtime_prediction')
-    p = figure(plot_width=1000, plot_height=500, x_axis_label='prediction')
+    p = figure(plot_width=1080, plot_height=720, x_axis_label='prediction')
     p.background_fill_color = "#F2F1EF"
     p.line([i for i in range(int(len(close)))], close, line_width=1.5, color='black')
     p.circle(c_index, c_value, color=colors, size=5)

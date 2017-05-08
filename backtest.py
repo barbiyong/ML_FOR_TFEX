@@ -37,13 +37,12 @@ def back_test(data, predict, TP, cutloss):
         p_l_ratio = 0
 
     # plot_pl(close, trade_index, [trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio])
-    # if win_chance >= 50 and trade_count >= 21:
-    #     plot_pl(close, trade_index, [trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio])
-    #     print('trade_count:', trade_count, 'profit_count:', profit_count, 'loss_count:', loss_count, 'profit_sum:', profit_sum, 'loss_sum:', loss_sum, 'win_chance:', win_chance,
-    #           'p_l_ratio:', p_l_ratio)
+    if trade_count >= 21 and win_chance >= 45:
+        plot_pl(close, trade_index, [trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio])
+        print('trade_count:', trade_count, 'profit_count:', profit_count, 'loss_count:', loss_count, 'profit_sum:', profit_sum, 'loss_sum:', loss_sum, 'win_chance:', win_chance,
+              'p_l_ratio:', p_l_ratio)
     # print('trade_count:', trade_count, 'profit_count:', profit_count, 'loss_count:', loss_count, 'profit_sum:', profit_sum, 'loss_sum:', loss_sum, 'win_chance:', win_chance, 'p_l_ratio:', p_l_ratio)
     return trade_count, profit_count, loss_count, profit_sum, loss_sum, win_chance, p_l_ratio
-
 
 
 def back_test_short(data, predict, TP, cutloss):

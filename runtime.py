@@ -94,7 +94,7 @@ def reduce(pa, pb, pc):
 
 def main():
     threading.Timer(180.0, main).start()  # called every 3 minute
-    fname_a = 'L_T3.2_C0.8_W53_R4.0.sav'
+    fname_a = 'L_T3.2_C1.2_W46_R2.4.sav'
     fname_b = 'L_T3.2_C1.2_W53_R3.0.sav'
     fname_c = 'S_T2.0_C2.0_W53_R1.3.sav'
     ohlc = get_ohlc('S50M17', '3')

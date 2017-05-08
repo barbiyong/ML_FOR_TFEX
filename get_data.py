@@ -3,7 +3,7 @@ import time
 
 import pandas as pd
 import requests
-
+import os
 from talib_wrapper import *
 from bokeh.plotting import figure, output_file, show
 
@@ -94,8 +94,8 @@ def get_y_long(data, TP, cutloss, p_train):
     # p.circle(is_up, value, fill_color="blue", size=5)
     # # show(p)
     #
-    # ##test plott
-    # # os.remove('test_data.html')
+    #test plott
+    # os.remove('test_data.html')
     # output_file("test_data.html", title='test_data')
     # p_data = data[slice + p_train:]
     # is_up = []
@@ -106,7 +106,7 @@ def get_y_long(data, TP, cutloss, p_train):
     #         is_up.append(i)
     #         value.append(p_data[i])
     #
-    # p = figure(plot_width=1500, plot_height=800, x_axis_label='test_data')
+    # p = figure(plot_width=1080, plot_height=720, x_axis_label='test_data')
     # p.line([i for i in range(int(len(p_data)))], p_data, line_width=1.5, color='grey')
     # p.circle(is_up, value, fill_color="blue", size=5)
     # show(p)
@@ -114,7 +114,6 @@ def get_y_long(data, TP, cutloss, p_train):
     df = pd.DataFrame({'CLASS': ret_list[slice:]})
 
     return df
-
 
 
 def get_y_short(data, TP, cutloss, p_train, period):
@@ -159,22 +158,22 @@ def get_y_short(data, TP, cutloss, p_train, period):
     # p.circle(is_up, value, fill_color="blue", size=5)
     # # show(p)
     #
-    # ##test plott
-    # # os.remove('test_data.html')
-    # output_file("test_data.html", title='test_data')
-    # p_data = data[slice + p_train:]
-    # is_up = []
-    # value = []
-    #
-    # for i, item in enumerate(ret_list[slice + p_train:]):
-    #     if item == 1:
-    #         is_up.append(i)
-    #         value.append(p_data[i])
-    #
-    # p = figure(plot_width=1500, plot_height=800, x_axis_label='test_data')
-    # p.line([i for i in range(int(len(p_data)))], p_data, line_width=1.5, color='grey')
-    # p.circle(is_up, value, fill_color="blue", size=5)
-    # show(p)
+    ##test plott
+    # os.remove('test_data.html')
+    output_file("test_data.html", title='test_data')
+    p_data = data[slice + p_train:]
+    is_up = []
+    value = []
+
+    for i, item in enumerate(ret_list[slice + p_train:]):
+        if item == 1:
+            is_up.append(i)
+            value.append(p_data[i])
+
+    p = figure(plot_width=1500, plot_height=800, x_axis_label='test_data')
+    p.line([i for i in range(int(len(p_data)))], p_data, line_width=1.5, color='grey')
+    p.circle(is_up, value, fill_color="blue", size=5)
+    show(p)
 
     df = pd.DataFrame({'CLASS': ret_list[slice:]})
 

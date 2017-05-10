@@ -14,4 +14,3 @@ sklearn
 scipy
 matplotlib
 pyimgur
-TA-Lib

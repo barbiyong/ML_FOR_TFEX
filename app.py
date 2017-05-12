@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, request, render_template, jsonify
+from runtime import run
 app = Flask(__name__, static_url_path='')
 
 
@@ -7,6 +8,17 @@ app = Flask(__name__, static_url_path='')
 def main():
     function_name = request.args.get('function_name')
     if function_name == 'LP':
+        message = run(function_name)
+        print(message)
+        message = {
+            "messages": [
+                {"text": message}
+            ]
+        }
+        return jsonify(message)
+    elif function_name == 'NOW':
+        message = run(function_name)
+        print(message)
         message = {
             "messages": [
                 {"text": u" LAST PREDICT !! "}

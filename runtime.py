@@ -92,9 +92,38 @@ def reduce(pa, pb, pc):
     return pa, pb, pc
 
 
+def run(fname):
+    fname_a = 'L_T3.2_C1.2_W46_R2.4.sav'
+    fname_b = 'L_T3.2_C1.2_W53_R3.0.sav'
+    fname_c = 'S_T2.0_C2.0_W53_R1.3.sav'
+    ohlc = get_ohlc('S50M17', '3')
+    ohlc = [i[:] for i in ohlc]
+    predict_a = joblib.load(fname_a).predict(get_x(ohlc))
+    predict_b = joblib.load(fname_b).predict(get_x(ohlc))
+    predict_c = joblib.load(fname_c).predict(get_x(ohlc))
+    predict_a = predict_a.tolist()
+    predict_b = predict_b.tolist()
+    predict_c = predict_c.tolist()
+    predict_a, predict_b, predict_c = reduce(predict_a, predict_b, predict_c)
+    predict_len_a = len(predict_a)
+    predict_len_b = len(predict_b)
+    predict_len_c = len(predict_c)
+    predict_len = predict_len_a if predict_len_a == predict_len_b else 0
+    date = ohlc[0][len(ohlc[0]) - predict_len:]
+    close = ohlc[1][len(ohlc[1]) - predict_len:]
+    if fname == 'NOW':
+        ret_string, alert = now_state(date, close, predict_a, predict_b, predict_c, False, 0)
+        if alert is True:
+            print()
+            return ret_string
+    if fname == 'LP':
+        ret_string = last_predict(date, close, predict_a, predict_b, predict_c)
+        return ret_string
+
+
 def main():
     threading.Timer(180.0, main).start()  # called every 3 minute
-    fname_a = 'L_T3.2_C1.2_W46_R2.4.sav'
+    fname_a = 'L_T3.2_C0.8_W53_R4.0.sav'
     fname_b = 'L_T3.2_C1.2_W53_R3.0.sav'
     fname_c = 'S_T2.0_C2.0_W53_R1.3.sav'
     ohlc = get_ohlc('S50M17', '3')
@@ -117,7 +146,7 @@ def main():
         print("\n\n\nGet result...")
         print('-----', str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')), '-----')
         if alert is True:
-            print('A: L_T3.2_C1.2_W46_R2.4', '  B: L_T3.2_C1.2_W53_R3.0', '  C: S_T2.0_C2.0_W53_R1.3')
+            print('A: L_T3.2_C0.8_W53_R4.0', '  B: L_T3.2_C1.2_W53_R3.0', '  C: S_T2.0_C2.0_W53_R1.3')
             print('\nNOW')
             print('\n********************************')
             print('**********************************')
@@ -132,7 +161,4 @@ def main():
             print('\nNONE')
         pl = -500
         plot_run_time(date[pl:], close[pl:], predict_a[pl:], predict_b[pl:], predict_c[pl:])
-
-
-if __name__ == '__main__':
-    main()
+main()
